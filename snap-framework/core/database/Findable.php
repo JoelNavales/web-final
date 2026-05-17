@@ -6,7 +6,7 @@ namespace core\database;
 
 interface Findable
 {
-    public function find(int $id): ?object;
+    public function find(int $id): ?Model;
 
     public function all(): array;
 }

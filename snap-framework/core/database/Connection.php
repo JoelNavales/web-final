@@ -4,33 +4,27 @@ declare(strict_types=1);
 
 namespace core\database;
 
-use Doctrine\DBAL\DriverManager;
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\ORMSetup;
+use PDO;
 
 class Connection
 {
-    private EntityManagerInterface $entityManager;
+    private PDO $pdo;
 
     public function __construct(DatabaseDriver $driver, array $config)
     {
-        $ormConfig = ORMSetup::createAttributeMetadataConfig(
-            paths: [$config['models_path']],
-            isDevMode: true,
+        $this->pdo = new PDO(
+            $driver->getDsn($config),
+            $driver->getUsername($config),
+            $driver->getPassword($config),
+            [
+                PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            ],
         );
-
-        // PHP 8.4+ uses native lazy objects; no proxy directory is needed.
-        $ormConfig->enableNativeLazyObjects(true);
-
-        $connectionParams = $driver->getConnectionParams($config);
-        $dbalConnection   = DriverManager::getConnection($connectionParams);
-
-        $this->entityManager = new EntityManager($dbalConnection, $ormConfig);
     }
 
-    public function getEntityManager(): EntityManagerInterface
+    public function getPdo(): PDO
     {
-        return $this->entityManager;
+        return $this->pdo;
     }
 }

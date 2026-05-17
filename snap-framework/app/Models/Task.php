@@ -4,26 +4,14 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Repositories\TaskRepository;
 use core\database\Model;
 use DateTimeImmutable;
-use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: TaskRepository::class)]
-#[ORM\Table(name: 'tasks')]
-#[ORM\HasLifecycleCallbacks]
 class Task extends Model
 {
-    #[ORM\Column(type: 'string', length: 255)]
     private string $title;
-
-    #[ORM\Column(type: 'text', nullable: true)]
     private ?string $description = null;
-
-    #[ORM\Column(type: 'string', enumType: TaskStatus::class)]
     private TaskStatus $status;
-
-    #[ORM\Column(type: 'date_immutable', nullable: true)]
     private ?DateTimeImmutable $due_date = null;
 
     public function __construct(string $title, TaskStatus $status = TaskStatus::Pending)

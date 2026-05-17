@@ -6,11 +6,18 @@ namespace core\database;
 
 class SQLiteDriver implements DatabaseDriver
 {
-    public function getConnectionParams(array $config): array
+    public function getDsn(array $config): string
     {
-        return [
-            'driver' => 'pdo_sqlite',
-            'path'   => $config['database'],
-        ];
+        return "sqlite:{$config['database']}";
+    }
+
+    public function getUsername(array $config): ?string
+    {
+        return null;
+    }
+
+    public function getPassword(array $config): ?string
+    {
+        return null;
     }
 }

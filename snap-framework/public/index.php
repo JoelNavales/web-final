@@ -6,7 +6,7 @@ require __DIR__ . '/../vendor/autoload.php';
 
 session_start();
 
-use App\Models\Task;
+use App\Repositories\TaskRepository;
 use App\Repositories\TaskRepositoryInterface;
 use core\Application;
 use core\Container\Container;
@@ -16,7 +16,7 @@ use core\database\SQLiteDriver;
 use core\Http\Request;
 use core\Http\Router;
 use core\View\Engine;
-use Doctrine\ORM\EntityManagerInterface;
+use PDO;
 
 $dbConfig  = require __DIR__ . '/../config/database.php';
 $appConfig = require __DIR__ . '/../config/app.php';
@@ -24,12 +24,13 @@ $appConfig = require __DIR__ . '/../config/app.php';
 $container = new Container();
 
 $container->singleton(
-    EntityManagerInterface::class,
+    PDO::class,
     function () use ($dbConfig) {
         $connName = $dbConfig['default'];
         $connConf = $dbConfig['connections'][$connName];
         $driver   = $connName === 'sqlite' ? new SQLiteDriver() : new MySQLDriver();
-        return (new Connection($driver, $connConf))->getEntityManager();
+
+        return (new Connection($driver, $connConf))->getPdo();
     },
 );
 
@@ -40,7 +41,7 @@ $container->singleton(
 
 $container->bind(
     TaskRepositoryInterface::class,
-    fn(Container $c) => $c->resolve(EntityManagerInterface::class)->getRepository(Task::class),
+    fn(Container $c) => new TaskRepository($c->resolve(PDO::class)),
 );
 
 $router  = new Router();

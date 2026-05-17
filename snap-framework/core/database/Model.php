@@ -5,34 +5,12 @@ declare(strict_types=1);
 namespace core\database;
 
 use DateTimeImmutable;
-use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\MappedSuperclass]
 abstract class Model
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
     protected ?int $id = null;
-
-    #[ORM\Column(type: 'datetime_immutable')]
     protected ?DateTimeImmutable $created_at = null;
-
-    #[ORM\Column(type: 'datetime_immutable')]
     protected ?DateTimeImmutable $updated_at = null;
-
-    #[ORM\PrePersist]
-    public function onPrePersist(): void
-    {
-        $this->created_at ??= new DateTimeImmutable();
-        $this->updated_at   = new DateTimeImmutable();
-    }
-
-    #[ORM\PreUpdate]
-    public function onPreUpdate(): void
-    {
-        $this->updated_at = new DateTimeImmutable();
-    }
 
     public function getId(): ?int
     {
@@ -47,5 +25,20 @@ abstract class Model
     public function getUpdatedAt(): ?DateTimeImmutable
     {
         return $this->updated_at;
+    }
+
+    public function hydrate(array $row): void
+    {
+        if (array_key_exists('id', $row)) {
+            $this->id = $row['id'] !== null ? (int) $row['id'] : null;
+        }
+        if (array_key_exists('created_at', $row)) {
+            $this->created_at = $row['created_at'] !== null
+                ? new DateTimeImmutable($row['created_at']) : null;
+        }
+        if (array_key_exists('updated_at', $row)) {
+            $this->updated_at = $row['updated_at'] !== null
+                ? new DateTimeImmutable($row['updated_at']) : null;
+        }
     }
 }

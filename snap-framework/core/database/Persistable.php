@@ -6,7 +6,7 @@ namespace core\database;
 
 interface Persistable
 {
-    public function save(object $entity): void;
+    public function save(Model $entity): void;
 
-    public function delete(object $entity): void;
+    public function delete(Model $entity): void;
 }
