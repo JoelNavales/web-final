@@ -6,14 +6,6 @@
     <title><?= htmlspecialchars($title ?? 'Task Manager') ?></title>
 </head>
 <body>
-<header>
-    <!-- <nav>
-        <a href="/">Home</a> |
-        <a href="/tasks">Tasks</a> |
-        <a href="/tasks/create">New Task</a>
-    </nav> -->
-    <hr>
-</header>
 <main>
     <?= $content ?>
 </main>

@@ -16,7 +16,6 @@ use core\database\SQLiteDriver;
 use core\Http\Request;
 use core\Http\Router;
 use core\View\Engine;
-use PDO;
 
 $dbConfig  = require __DIR__ . '/../config/database.php';
 $appConfig = require __DIR__ . '/../config/app.php';
