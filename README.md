@@ -27,7 +27,7 @@ The default driver is **SQLite** (zero-config). No changes are needed.
 To switch to MySQL, edit `config/database.php`:
 
 ```php
-'default' => 'mysql',  // change from 'sqlite'
+'default' => 'mysql', 
 
 'connections' => [
     'mysql' => [
