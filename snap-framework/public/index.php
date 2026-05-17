@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
+ini_set('session.save_path', __DIR__ . '/../storage/sessions');
 session_start();
 
+use App\Middleware\LogMiddleware;
 use App\Repositories\TaskRepository;
 use App\Repositories\TaskRepositoryInterface;
 use core\Application;
@@ -48,4 +50,8 @@ $request = new Request();
 
 (require __DIR__ . '/../routes/web.php')($router);
 
-(new Application($container, $router, $request))->run();
+$app = new Application($container, $router, $request);
+
+$app->pipe(new LogMiddleware());
+
+$app->run();

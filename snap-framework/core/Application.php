@@ -5,17 +5,29 @@ declare(strict_types=1);
 namespace core;
 
 use core\Container\Container;
+use core\Http\Middleware;
+use core\Http\Pipeline;
 use core\Http\Request;
 use core\Http\Response;
 use core\Http\Router;
 
 class Application
 {
+    private Pipeline $pipeline;
+
     public function __construct(
         private Container $container,
         private Router    $router,
         private Request   $request,
-    ) {}
+    ) {
+        $this->pipeline = new Pipeline();
+    }
+
+    public function pipe(Middleware $middleware): static
+    {
+        $this->pipeline->pipe($middleware);
+        return $this;
+    }
 
     public function run(): void
     {
@@ -31,8 +43,13 @@ class Application
         $params  = $match['params'];
         $request = $this->request->withParams($params);
 
-        $controller = $this->container->resolve($controllerClass);
-        $response   = $controller->$method($request);
+        $response = $this->pipeline->run(
+            $request,
+            function (Request $req) use ($controllerClass, $method): Response {
+                $controller = $this->container->resolve($controllerClass);
+                return $controller->$method($req);
+            },
+        );
 
         if ($response instanceof Response) {
             $response->send();
