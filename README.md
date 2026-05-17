@@ -1,6 +1,6 @@
 # PHP MVC Framework — Task Manager MVP
 
-A hand-built PHP 8.3+ MVC framework demonstrating SOLID principles with Doctrine ORM for persistence.
+A hand-built PHP 8.3+ MVC framework demonstrating SOLID principles.
 
 ---
 
@@ -22,12 +22,12 @@ composer install
 
 ### 2. Configure the database
 
-The default driver is **SQLite** (zero-config). No changes are needed.
+The default driver is **MYSQL** (zero-config). No changes are needed.
 
 To switch to MySQL, edit `config/database.php`:
 
 ```php
-'default' => 'mysql',  // change from 'sqlite'
+'default' => 'mysql', 
 
 'connections' => [
     'mysql' => [
@@ -89,18 +89,6 @@ Open `http://localhost:8000` in your browser.
 | `updated_at`  | datetime (auto)          | —        | Updated on every save              |
 
 ---
-
-## Architecture Overview
-
-### Why Doctrine ORM?
-
-Doctrine ORM is a declared micro-library within the rubric's allowance for external persistence libraries. It provides:
-
-- **Type-safe entities** via PHP 8 attributes (`#[Entity]`, `#[Column]`, etc.)
-- **Attribute mapping** — no XML/YAML config files, mapping lives with the class
-- **Unit of Work pattern** — the framework focuses on HTTP routing and DI rather than reinventing persistence
-- **SchemaTool** — schema management without raw SQL
-
 ### Why are Router and Dispatcher split?
 
 `Router` has one job: match an HTTP method + path to a handler. `Application` has one job: invoke that handler via the container. Merging them would give `Router` knowledge of controllers and the DI container — a clear SRP violation. The split also makes the router trivially testable in isolation.
@@ -122,7 +110,7 @@ Doctrine ORM is a declared micro-library within the rubric's allowance for exter
 php bin/console.php schema:create
 php bin/console.php schema:update
 
-# Start server (from my-mvc-framework/ directory)
+# Start server (from snap-framework/ directory)
 php -S localhost:8000 -t public/
 
 # Regenerate autoloader after adding new classes
